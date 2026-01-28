@@ -42,7 +42,7 @@ Das System folgt einer modernen Schicht-Architektur (Layered Architecture):
 ## ESP32-WROOM Pinout
 
 <p align="center">
-  <img src="images/ESP32-pinout.png" alt="ESP32 Pinout Plan" width="600">
+  <img src="https://forum.arduino.cc/t/esp32-wroom-d32-dev-board-uart-flash-etc-question/1267145" alt="ESP32 Pinout Plan" width="600">
   <br>
-  <em>Abbildung 1: Pin-Belegung des genutzten ESP32 DevKit V1</em>
+  <em>Abbildung 1: Pin-Belegung des genutzten ESP-32 WROOM</em>
 </p>
