@@ -32,7 +32,7 @@ msg_count = 0
 
 while True:
     try:
-        # Der Diva (DHT22) etwas Zeit geben
+        # Dem DHT22 etwas Zeit geben
         time.sleep(2) 
         sensor.measure()
         t = sensor.temperature()
@@ -65,4 +65,4 @@ while True:
              print("Sicherheits-Neustart...")
              reset()
 
-    time.sleep(10)
+    time.sleep(898)
