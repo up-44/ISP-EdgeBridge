@@ -39,7 +39,7 @@ Das System folgt einer modernen Schicht-Architektur (Layered Architecture):
 ```
 
 
-## ESP32-WROOM Pinout
+## 🚦 ESP32-WROOM Pinout
 
 <p align="center">
   <img src="images/ESP32-pinout.png" alt="ESP32 Pinout Plan" width="600">
