@@ -13,56 +13,41 @@ TOPIC = "sensor/climate"
 sensor = dht.DHT22(Pin(2))
 led = Pin(2, Pin.OUT)
 
-def connect_mqtt():
-    try:
-        # Wir fügen ein keepalive hinzu, damit die Verbindung stabil bleibt
-        client = MQTTClient(CLIENT_ID, MQTT_BROKER, keepalive=60)
-        client.connect()
-        print("Erfolgreich mit MQTT-Broker verbunden")
-        return client
-    except Exception as e:
-        print("MQTT Verbindungsfehler:", e)
-        return None
+# Das Client-Objekt EINMAL außerhalb der Schleife
+client = MQTTClient(CLIENT_ID, MQTT_BROKER, keepalive=60)
 
-# Initialer Start
-client = connect_mqtt()
-
-# Zähler für Stabilitätstest
-msg_count = 0
+print("System gestartet. Warte auf erste Messung...")
 
 while True:
     try:
-        # Dem DHT22 etwas Zeit geben
+        # 1. Sensor auslesen (DHT22 braucht etwas Zeit zum Aufwachen)
         time.sleep(2) 
         sensor.measure()
         t = sensor.temperature()
         h = sensor.humidity()
         
-        payload = json.dumps({"temp": t, "hum": h, "count": msg_count})
+        # 2. Verbindung aufbauen (On-Demand)
+        print("Verbinde mit Broker...")
+        client.connect()
         
-        if client:
-            client.publish(TOPIC, payload)
-            msg_count += 1
-            print(f"Nachricht #{msg_count} gesendet: {payload}")
-        else:
-            print("Kein Client vorhanden, versuche Reconnect...")
-            client = connect_mqtt()
-            
-        led.value(1); time.sleep(0.1); led.value(0)
+        # 3. Payload erstellen & Senden
+        payload = json.dumps({"temp": t, "hum": h})
+        client.publish(TOPIC, payload)
+        print(f"Gesendet: {payload}")
+        
+        # Kurzes LED-Feedback
+        led.value(1); time.sleep(0.2); led.value(0)
+        
+        # 4. Verbindung sauber TRENNEN (Wichtig für lange Pausen!)
+        client.disconnect()
+        print("Verbindung getrennt. Schlafe für 1 Minute...")
+        
+        # 5. Pause
+        time.sleep(60)
         
     except Exception as e:
-        print("Fehler im Loop:", e)
-        # Wenn der Fehler "ECONNRESET" oder ähnlich ist, Hard-Reset des Clients
-        try:
-            client.disconnect()
-        except:
-            pass
-        time.sleep(5)
-        client = connect_mqtt()
-        
-        # Falls gar nichts mehr geht nach 3 Fehlern: ESP32 neu starten
-        if msg_count > 0 and msg_count % 50 == 0: 
-             print("Sicherheits-Neustart...")
-             reset()
-
-    time.sleep(898)
+        print("Fehler im Ablauf:", e)
+        # Bei Fehlern (z.B. WLAN weg) 10 Sekunden warten und dann ESP neu starten
+        # Ein Neustart ist im Feld oft sicherer als endloses Reconnect-Gefummel
+        time.sleep(10)
+        reset()
