@@ -35,3 +35,14 @@ Das System folgt einer modernen Schicht-Architektur (Layered Architecture):
 ├── .env.example         # Vorlage für Umgebungsvariablen (KEINE PASSWÖRTER)
 ├── .gitignore           # Ausschlussregeln für Git (Sicherheit!)
 └── README.md            # Diese Dokumentation
+
+```
+
+
+## ESP32-WROOM Pinout
+
+<p align="center">
+  <img src="images/ESP32-pinout.png" alt="ESP32 Pinout Plan" width="600">
+  <br>
+  <em>Abbildung 1: Pin-Belegung des genutzten ESP32 DevKit V1</em>
+</p>
